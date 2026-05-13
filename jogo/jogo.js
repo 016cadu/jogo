@@ -14,9 +14,9 @@ const player = {
     dirY: 0
 };
 
-const chaves = {};
-const tiro = [];
-const inimigo = [];
+const keys = {};
+const tiros = [];
+const inimigos = [];
 
 let dificuldade = 1;
 
@@ -29,7 +29,7 @@ window.addEventListener("keyup", function(evento) {
 });
 
 canvas.addEventListener("click", function() {
-    tiro.push({
+    tiros.push({
         x: player.x,
         y: player.y,
         raio: 5,
@@ -46,7 +46,7 @@ function drawPlayer() {
         player.y,
         player.raio,
         0,
-        math.PI * 2 
+        Math.PI * 2 
     );
 
     ctx.fillStyle = player.color;
@@ -96,3 +96,122 @@ function movePlayer() {
         )
     );
 }
+
+function updateTiros() {
+    tiros.forEach(function(tiro, index) {
+        tiro.x += tiro.velocityX;
+        tiro.y += tiro.velocityY;
+
+        ctx.beginPath();
+        ctx.arc(
+            tiro.x,
+            tiro.y,
+            tiro.raio,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+
+        if(
+            tiro.x < 0 ||
+            tiro.x > canvas.widht ||
+            tiro.y < 0 ||
+            tiro.y > canvas.height
+        ) {
+            tiros.splice(index, 1);
+        }
+    });
+
+}
+
+function spawnInimigo() {
+    const inimigo = {
+        x: canvas.widht + 20,
+        y: Math.random() * canvas.height,
+        raio: 15,
+        color: "blue",
+        speed: 2 + dificuldade
+    };
+    
+    inimigos.push(inimigo);
+}
+
+setInterval(spawnInimigo, 1000);
+
+setInterval(function() {
+    dificuldade += 0.2;
+}, 5000);
+
+function updateInimigos() {
+    inimigos.forEach(function(inimigo, index) {
+        inimigo.x -= inimigo.speed;
+        ctx.beginPath();
+        ctx.arc(
+            inimigo.x,
+            inimigo.y,
+            inimigo.raio,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = inimigo.color;
+        ctx.fill();
+        if (inimigo.x < -50) {
+            inimigos.splice(index, 1);
+        }
+    });
+}
+
+function checkColisao() {
+    inimigos.forEach(function(inimigo, inimigoIndex) {
+        tiros.forEach(function(tiro, tiroIndex) {
+            const dx = inimigo.x - tiro.x;
+            const dy = inimigo.y - tiro.y;
+            const distance = Math.sqrt(
+                dx * dx + dy * dy
+            );
+
+            if (
+                distance <
+                inimigo.raio + tiro.raio
+            ) {
+                inimigos.splice(enemyIndex, 1);
+                tiros.splice(tiroIndex, 1);
+            }
+        });
+        
+        const dx = inimigo.x - player.x;
+        const dy = inimigo.y - player.y;
+        const distance = Math.sqrt(
+            dx * dx + dy * dy
+        );
+
+        if (
+            distance <
+            inimigo.raio + player.raio
+        ) {
+            alert("GAME OVER! F5 para reiniciar.");
+            location.reload();
+        }
+    });
+}
+
+function gameLoop() {
+    ctx.clearRect(
+        0,
+        0,
+        canvas.widht,
+        canvas.height
+    );
+
+    movePlayer();
+    drawPlayer();
+    updateTiros();
+    updateInimigos();
+    checkColisao();
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
