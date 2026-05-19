@@ -1,6 +1,5 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-console.log("ctx");
 
 canvas.width = 1000;
 canvas.height = 600;
@@ -12,8 +11,6 @@ const jogador = {
     cor: "white",
     velocidade: 5,
 };
-
-console.log("jogador")
 
 const teclas = {};
 const tiros = [];
@@ -205,7 +202,6 @@ function desenharPontos() {
 }
 
 function loopJogo() {
-    console.log("loop");
     ctx.clearRect(
         0,
         0,
