@@ -1,13 +1,25 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+const imagemFundo = new Image();
+imagemFundo.src = "floflobiuta.jpg";
+
+const imagemJogador = new Image();
+imagemJogador.src = "vinijr.png";
+
+const imagemInimigo = new Image();
+imagemInimigo.src = "virginia.png";
+
+const imagemTiro = new Image();
+imagemTiro.src = "tintabranca.png";
+
 canvas.width = 1000;
 canvas.height = 600;
 
 const jogador = {
     x: 500,
     y: 300,
-    raio: 20,
+    raio: 30,
     cor: "white",
     velocidade: 5,
 };
@@ -31,22 +43,20 @@ canvas.addEventListener("click", function() {
     tiros.push({
         x: jogador.x,
         y: jogador.y,
-        raio: 5
+        raio: 15
     });
 });
 
 function desenharJogador() {
-    ctx.beginPath();
-    ctx.arc(
-        jogador.x,
-        jogador.y,
-        jogador.raio,
-        0,
-        Math.PI * 2 
-    );
+    ctx.drawImage(
+        imagemJogador,
 
-    ctx.fillStyle = jogador.cor;
-    ctx.fill();
+        jogador.x - jogador.raio,
+        jogador.y - jogador.raio,
+
+        jogador.raio * 2,
+        jogador.raio * 2
+    );
 }
 
 
@@ -92,17 +102,15 @@ function atualizarTiros() {
 
         tiro.x += 10
 
-        ctx.beginPath();
-        ctx.arc(
-            tiro.x,
-            tiro.y,
-            tiro.raio,
-            0,
-            Math.PI * 2
-        );
+        ctx.drawImage(
+            imagemTiro,
 
-        ctx.fillStyle = "yellow";
-        ctx.fill();
+            tiro.x - tiro.raio,
+            tiro.y - tiro.raio,
+
+            tiro.raio * 2,
+            tiro.raio * 2
+        );
 
         if (tiro.x > canvas.width) {
             tiros.splice(i, 1);
@@ -115,7 +123,7 @@ function criarInimigo() {
     const inimigo = {
         x: canvas.width + 20,
         y: Math.random() * canvas.height,
-        raio: 15,
+        raio: 25,
         cor: "lime",
         velocidade: 2 + dificuldade
     };
@@ -134,17 +142,15 @@ function atualizarInimigos() {
         const inimigo = inimigos[i];
         inimigo.x -= inimigo.velocidade;
 
-        ctx.beginPath();
-        ctx.arc(
-            inimigo.x,
-            inimigo.y,
-            inimigo.raio,
-            0,
-            Math.PI * 2
-        );
+        ctx.drawImage(
+            imagemInimigo,
 
-        ctx.fillStyle = inimigo.cor;
-        ctx.fill();
+            inimigo.x - inimigo.raio,
+            inimigo.y - inimigo.raio,
+
+            inimigo.raio * 2,
+            inimigo.raio * 2
+        );
 
         if (inimigo.x < -50) {
             inimigos.splice(i, 1);
@@ -192,7 +198,7 @@ for (let i = inimigos.length - 1; i >= 0; i--) {
 }
 
 function desenharPontos() {
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "black";
     ctx.font = "30px Arial";
     ctx.fillText(
         "Pontos: " + pontos,
@@ -207,6 +213,14 @@ function loopJogo() {
         0,
         canvas.width,
         canvas.height
+    );
+
+    ctx.drawImage(
+     imagemFundo,
+     0,
+     0,
+     canvas.width,
+     canvas.height
     );
 
     moverJogador();
