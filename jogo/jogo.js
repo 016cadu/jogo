@@ -4,10 +4,23 @@ const ctx = canvas.getContext("2d");
 canvas.width = 1000;
 canvas.height = 600;
 
+const imagemJogador = new Image();
+imagemJogador.src = "jogador.png";
+
+const imagemInimigo = new Image();
+imagemInimigo.src = "inimigo.png";
+
+const videoFundo = document.createElement("video");
+videoFundo.src = "fundo.mp4";
+videoFundo.loop = true;
+videoFundo.muted = true;
+videoFundo.play();
+
+
 const jogador = {
     x: 500,
     y: 300,
-    raio: 20,
+    raio: 35,
     cor: "white",
     velocidade: 5,
 };
@@ -36,17 +49,13 @@ canvas.addEventListener("click", function() {
 });
 
 function desenharJogador() {
-    ctx.beginPath();
-    ctx.arc(
-        jogador.x,
-        jogador.y,
-        jogador.raio,
-        0,
-        Math.PI * 2 
+    ctx.drawImage(
+        imagemJogador,
+        jogador.x - jogador.raio,
+        jogador.y - jogador.raio,
+        jogador.raio * 2,
+        jogador.raio * 2
     );
-
-    ctx.fillStyle = jogador.cor;
-    ctx.fill();
 }
 
 
@@ -115,7 +124,7 @@ function criarInimigo() {
     const inimigo = {
         x: canvas.width + 20,
         y: Math.random() * canvas.height,
-        raio: 15,
+        raio: 50,
         cor: "lime",
         velocidade: 2 + dificuldade
     };
@@ -134,20 +143,17 @@ function atualizarInimigos() {
         const inimigo = inimigos[i];
         inimigo.x -= inimigo.velocidade;
 
-        ctx.beginPath();
-        ctx.arc(
-            inimigo.x,
-            inimigo.y,
-            inimigo.raio,
-            0,
-            Math.PI * 2
+        ctx.drawImage(
+            imagemInimigo,
+            inimigo.x - inimigo.raio,
+            inimigo.y - inimigo.raio,
+            inimigo.raio * 2,
+            inimigo.raio * 2
         );
 
-        ctx.fillStyle = inimigo.cor;
-        ctx.fill();
-
         if (inimigo.x < -50) {
-            inimigos.splice(i, 1);
+            alert("GAME OVER! Pressione ESC para reiniciar.");
+            location.reload();
         }
     }
 }
@@ -177,6 +183,7 @@ for (let i = inimigos.length - 1; i >= 0; i--) {
 
         const dx = inimigo.x - jogador.x;
         const dy = inimigo.y - jogador.y;
+        
         const distancia = Math.sqrt(
             dx * dx + dy * dy
         );
@@ -193,7 +200,7 @@ for (let i = inimigos.length - 1; i >= 0; i--) {
 
 function desenharPontos() {
     ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
+    ctx.font = "20px Arial";
     ctx.fillText(
         "Pontos: " + pontos,
         20,
@@ -203,6 +210,14 @@ function desenharPontos() {
 
 function loopJogo() {
     ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+    
+    ctx.drawImage(
+        videoFundo,
         0,
         0,
         canvas.width,
