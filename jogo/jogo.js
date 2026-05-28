@@ -152,8 +152,8 @@ function atualizarInimigos() {
         );
 
         if (inimigo.x < -50) {
-            alert("GAME OVER! Pressione ESC para reiniciar.");
-            location.reload();
+            alert("Você deixou um inimigo passar. GAME OVER!");
+            reiniciarJogo();
         }
     }
 }
@@ -192,8 +192,8 @@ for (let i = inimigos.length - 1; i >= 0; i--) {
             distancia <
             inimigo.raio + jogador.raio
         ) {
-            alert("GAME OVER! Pressione ESC para reiniciar.");
-            location.reload();
+            alert("Você encostou no inimigo. GAME OVER!");
+            reiniciarJogo();
         }
     }
 }
@@ -206,6 +206,18 @@ function desenharPontos() {
         20,
         40
     );
+}
+
+function reiniciarJogo() {
+    jogador.x = 500;
+    jogador.y = 300;
+    tiros.length = 0;
+    inimigos.length = 0;
+    pontos = 0;
+    dificuldade = 1;
+    for (let tecla in teclas) {
+        teclas[tecla] = false;
+    }
 }
 
 function loopJogo() {
